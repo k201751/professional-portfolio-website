@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import profileImage from '../assets/profile.JPG'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -19,11 +20,43 @@ interface Project {
   highlights: string[]
   tech: string[]
   challenge: string
+  status?: 'In Progress'
+  repository?: string
 }
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
 const EXPERIENCES: Experience[] = [
+  {
+    company: 'Hyve Labs',
+    role: 'AI Engineer',
+    period: 'Feb 2026 — Jul 2026',
+    description:
+      'Delivered full-stack analytics modernisation, data engineering, and AI automation solutions across cloud platforms and client products.',
+    highlights: [
+      'Replaced a Power BI reporting suite with a custom Next.js and FastAPI application, improving load times and delivering a more intuitive user experience.',
+      'Built Python ETL pipelines that extracted Business Central API data, serialized payloads, and loaded them into BigQuery on GCP for consistent, centralised reporting.',
+      'Re-implemented Power BI DAX calculation logic in FastAPI, fully decoupling reporting from the BI platform and reducing estimated licensing costs by 40–60%.',
+      'Embedded an in-product user feedback loop to support continuous improvement after launch.',
+      'Reworked constrained MoEngage pipelines on Azure Databricks, resolving data inaccuracies and restoring reliable reporting and segmentation workflows.',
+      'Scheduled data pipelines for automated daily execution, ensuring consistent and up-to-date data availability.',
+      'Developed an AI video generation pipeline for Sobha video ads, automating video composition, narration, and end-to-end ad creation.',
+      'Built automated SEO metadata generation tools for DP World and Gallop AI, enriching existing and future articles and streamlining content workflows.',
+    ],
+    tech: [
+      'Python',
+      'Next.js',
+      'FastAPI',
+      'BigQuery',
+      'GCP',
+      'AWS',
+      'Databricks',
+      'Azure',
+      'LoRA',
+      'ChatGPT',
+      'Gemini',
+    ],
+  },
   {
     company: 'InApp Solutions',
     role: 'Junior Software Engineer',
@@ -57,100 +90,108 @@ const EXPERIENCES: Experience[] = [
 const PROJECTS: Project[] = [
   {
     num: '01',
-    name: 'Autonomous Ticket Generator',
-    category: 'AI Engineering / Automation',
+    name: 'Global Leads',
+    category: 'Lead Intelligence / Data Engineering',
     description:
-      'An AI-powered microservice that converts unstructured client feedback into structured, actionable project-management tickets — integrating directly with PM tools via webhooks.',
+      'A lead research tool that collected records from several sources and helped the operations team find missing business contact details.',
     highlights: [
-      'FastAPI microservice with webhook-based event architecture',
-      'LLM-powered extraction and structured ticket generation',
-      'Pydantic validation for type-safe JSON output schemas',
-      'Direct integration with project-management platforms',
-      'Configurable extraction templates per client context',
+      'Collected lead records from a freelance marketplace, Yelp, and Google Business Profile, then cleaned and stored the data with Pandas.',
+      'Used DuckDuckGo results to look for matching contact details published on the open web.',
+      'Found useful matches for about 20% of masked records during testing and sent uncertain results for manual review.',
+      'Built the API in Django REST Framework with JWT login, roles, user management, and password reset.',
+      'Built a React and Vite admin portal for uploads, lead review, and role-based access.',
     ],
-    tech: ['Python', 'FastAPI', 'LLMs', 'Pydantic', 'Webhooks'],
+    tech: ['Python', 'Django REST', 'React', 'MySQL', 'LangChain', 'Pandas'],
     challenge:
-      'Designing prompt structures that reliably produce machine-parseable ticket formats across widely varying input quality and feedback styles.',
+      'Search results were often incomplete or unrelated. I added match scores and a review step so weak matches were not treated as confirmed contacts.',
   },
   {
     num: '02',
-    name: 'MedfloAI Scraper',
-    category: 'Backend / Data Engineering',
-    description:
-      'Production-oriented data extraction system migrated from a monolithic Django setup into a dedicated FastAPI microservice, improving reliability, performance, and maintainability.',
+    name: 'AI Video Generation Pipeline',
+    category: 'Generative AI',
+    description: 'A pipeline that creates video ads from generated clips, narration, and other assets.',
     highlights: [
-      'Full service separation into a standalone FastAPI microservice',
-      'Data extraction and transformation pipeline redesign',
-      'API development and downstream backend integration',
-      'Achieved improved performance over the original Django implementation',
+      'Connected the generation, narration, and rendering steps',
+      'Automated asset preparation and video assembly',
+      'Added settings so the workflow could be reused for different ads',
+      'Checked outputs before they moved to the next stage',
     ],
-    tech: ['Python', 'FastAPI', 'Django', 'REST APIs'],
-    challenge:
-      'Zero-downtime migration while maintaining backward compatibility with all existing downstream consumers during the transition period.',
+    tech: ['Python', 'Generative AI', 'Automation', 'Video Processing'],
+    challenge: 'Generated clips were not always usable, so the pipeline needed checks and retry rules.',
   },
   {
     num: '03',
-    name: 'Smart Traffic Monitoring System',
-    category: 'Computer Vision / AI',
-    description:
-      'An intelligent traffic monitoring system that analyzes live and recorded video feeds using computer vision to detect, track, and report traffic conditions automatically.',
+    name: 'Fast Resume',
+    category: 'Resume Tool',
+    description: 'A resume project built to make creating and updating a resume faster.',
     highlights: [
-      'Real-time object detection and multi-object tracking',
-      'Video processing and frame analysis pipeline',
-      'Traffic density measurement and flow analysis',
-      'Automated monitoring alerts and reporting',
+      'Organised resume content into reusable sections',
+      'Focused on a quick editing and update workflow',
+      'Published the source code on GitHub',
     ],
-    tech: ['Python', 'OpenCV', 'Computer Vision', 'Machine Learning'],
-    challenge:
-      'Maintaining acceptable inference latency for real-time detection pipelines while running on consumer-grade hardware without GPU acceleration.',
+    tech: ['Manually Coded'],
+    challenge: 'Keeping resume content easy to update without making the layout hard to maintain.',
+    repository: 'https://github.com/k201751/fast-resume',
   },
   {
     num: '04',
-    name: 'AI Video Generation Pipeline',
-    category: 'Generative AI',
-    description:
-      'An automated workflow for AI-driven video advertisement production, orchestrating generative models, asset processing, and rendering into a repeatable, configurable pipeline.',
+    name: 'Decentralised Identity Management System',
+    category: 'Blockchain / Identity',
+    description: 'A university project for storing and retrieving identity records through a MultiChain blockchain.',
     highlights: [
-      'End-to-end generative AI orchestration pipeline',
-      'Automated asset processing and visual composition',
-      'Configurable production workflow for repeat use',
-      'Consistent output quality from non-deterministic models',
+      'Stored identity details and a photo on a blockchain stream',
+      'Protected record input with multisignature controls',
+      'Built separate Python client and server scripts for adding and retrieving records',
+      'Matched a supplied photo before returning identity information',
     ],
-    tech: ['Python', 'Generative AI', 'Automation', 'Video Processing'],
-    challenge:
-      'Managing non-deterministic model outputs while keeping the pipeline robust enough to consistently produce usable, production-quality assets.',
+    tech: ['Python', 'MultiChain', 'Blockchain', 'Client–Server'],
+    challenge: 'Coordinating record storage, photo matching, and access across separate client and server scripts.',
+    repository: 'https://github.com/k201751/Decentralised-Identity-Management-System',
   },
   {
     num: '05',
-    name: 'Anna Virtual Model',
-    category: 'Generative AI / Computer Vision',
-    description:
-      'A virtual modeling system involving AI-generated visual assets, fine-tuned model weights, and automated generation workflows for consistent visual content output.',
+    name: 'Autonomous Ticket Generator',
+    category: 'AI Engineering / Automation',
+    description: 'A service that turns client feedback into project tickets and sends them to project management tools.',
     highlights: [
-      'Custom model fine-tuning with .safetensors weight formats',
-      'AI-generated visual asset production at scale',
-      'Automated model workflow orchestration',
-      'Computer vision integration for post-processing',
+      'Built the service with FastAPI and webhooks',
+      'Used an LLM to pull ticket details from free-form feedback',
+      'Validated the generated JSON with Pydantic',
+      'Added templates for different client requirements',
     ],
-    tech: ['Python', 'Generative AI', '.safetensors', 'Computer Vision'],
-    challenge:
-      'Fine-tuning model weights to produce consistent, high-fidelity results across varied generation prompts without significant quality degradation.',
+    tech: ['Python', 'FastAPI', 'LLMs', 'Pydantic', 'Webhooks'],
+    challenge: 'Client feedback varies in detail and format, but the output must follow the same schema.',
+    status: 'In Progress',
   },
   {
     num: '06',
+    name: 'Smart Traffic Monitoring System',
+    category: 'Computer Vision / AI',
+    description: 'A computer vision system that reads video feeds and reports traffic counts and flow.',
+    highlights: [
+      'Detecting and tracking vehicles across video frames',
+      'Processing live and recorded video',
+      'Measuring traffic density and movement',
+      'Generating alerts and reports',
+    ],
+    tech: ['Python', 'OpenCV', 'Computer Vision', 'Machine Learning'],
+    challenge: 'The system needs to process video close to real time on a machine without a dedicated GPU.',
+    status: 'In Progress',
+  },
+  {
+    num: '07',
     name: 'RideMate',
     category: 'Full Stack Development',
-    description:
-      'A ride-sharing web application built with ASP.NET MVC, supporting user accounts, route matching, and ride coordination features with a SQL-backed data layer.',
+    description: 'A ride-sharing web app for finding people travelling along similar routes.',
     highlights: [
-      'Full-stack MVC architecture with clean separation of concerns',
-      'User account management and session-based authentication',
-      'Route matching and ride coordination logic',
-      'SQL-backed relational data persistence',
+      'Built the application with ASP.NET MVC',
+      'Added user accounts and session-based login',
+      'Implemented route matching and ride coordination',
+      'Stored users, routes, and rides in SQL',
     ],
     tech: ['C#', 'ASP.NET MVC', 'SQL'],
-    challenge:
-      'Designing an efficient route-matching algorithm that remains performant as user volume scales without requiring a full graph-traversal solution.',
+    challenge: 'Routes needed to be compared without checking every possible path between two points.',
+    repository: 'https://github.com/k201751/RideMate',
   },
 ]
 
@@ -631,7 +672,7 @@ function Navbar() {
           {/* Right actions */}
           <div className="hidden md:flex items-center gap-5">
             <a
-              href="https://github.com/alinaeem"
+              href="https://github.com/k201751"
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors duration-200"
@@ -642,7 +683,7 @@ function Navbar() {
               <GithubIcon />
             </a>
             <a
-              href="https://linkedin.com/in/alinaeem"
+              href="https://linkedin.com/in/aliiinaeem"
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors duration-200"
@@ -708,10 +749,10 @@ function Navbar() {
             </a>
           ))}
           <div className="flex items-center gap-5 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-            <a href="https://github.com/alinaeem" target="_blank" rel="noopener noreferrer" style={{ color: '#444' }}>
+            <a href="https://github.com/k201751" target="_blank" rel="noopener noreferrer" style={{ color: '#444' }}>
               <GithubIcon />
             </a>
-            <a href="https://linkedin.com/in/alinaeem" target="_blank" rel="noopener noreferrer" style={{ color: '#444' }}>
+            <a href="https://linkedin.com/in/aliiinaeem" target="_blank" rel="noopener noreferrer" style={{ color: '#444' }}>
               <LinkedinIcon />
             </a>
             <a
@@ -730,6 +771,41 @@ function Navbar() {
 }
 
 // ── Hero ───────────────────────────────────────────────────────────────────────
+
+function HireNotification() {
+  return (
+    <a
+      href="#contact"
+      aria-label="Available for hire — go to contact section"
+      className="fixed right-4 bottom-4 sm:right-7 sm:bottom-7 z-40 group"
+      style={{ animation: 'hire-notification-in 0.65s ease 1s both' }}
+    >
+      <div
+        className="relative flex items-center gap-3 px-4 py-3 sm:px-5 sm:py-3.5 overflow-hidden"
+        style={{
+          background: 'rgba(12, 24, 30, 0.96)',
+          border: '1px solid rgba(56,189,248,0.5)',
+          boxShadow: '0 14px 45px rgba(0,0,0,0.5), 0 0 28px rgba(56,189,248,0.1)',
+          backdropFilter: 'blur(16px)',
+        }}
+      >
+        <span className="relative flex h-3 w-3 flex-shrink-0">
+          <span className="absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-60" style={{ animation: 'hire-status-ping 2s ease-out infinite' }} />
+          <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-400" />
+        </span>
+        <div>
+          <div className="font-mono text-[8px] tracking-[0.22em] uppercase mb-0.5" style={{ color: '#647b86' }}>
+            Current status
+          </div>
+          <div className="text-[12px] sm:text-[13px] font-semibold tracking-[0.08em] uppercase" style={{ color: '#e8e4de' }}>
+            Available for Hire
+          </div>
+        </div>
+        <ArrowIcon />
+      </div>
+    </a>
+  )
+}
 
 function Hero() {
   return (
@@ -845,15 +921,47 @@ function Hero() {
             </div>
           </div>
 
-          {/* Right: technical visual */}
+          {/* Right: profile portrait */}
           <div
-            className="hidden lg:block relative"
+            className="relative w-full max-w-[420px] mx-auto lg:mx-0"
             style={{
               animation: 'fadeSlideUp 0.9s ease 0.4s both',
               border: '1px solid rgba(255,255,255,0.05)',
             }}
           >
-            <TechnicalVisual />
+            <div className="relative aspect-[4/5] overflow-hidden bg-[#111]">
+              <img
+                src={profileImage}
+                alt="Ali Naeem, Software Engineer"
+                className="h-full w-full object-cover object-center"
+                style={{ filter: 'saturate(0.7) contrast(1.05) brightness(0.82)' }}
+              />
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    'linear-gradient(180deg, rgba(11,11,11,0.03) 45%, rgba(11,11,11,0.82) 100%)',
+                }}
+              />
+              <div className="absolute left-5 right-5 bottom-5 flex items-end justify-between gap-4">
+                <div>
+                  <div className="font-mono text-[9px] tracking-[0.24em] uppercase mb-1" style={{ color: '#38bdf8' }}>
+                    Software Engineer
+                  </div>
+                  <div className="text-lg font-semibold tracking-[-0.02em]" style={{ color: '#e8e4de' }}>
+                    Ali Naeem
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 pb-1">
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#38bdf8', animation: 'pulse-dot 2.5s ease infinite' }} />
+                  <span className="font-mono text-[8px] tracking-[0.18em] uppercase" style={{ color: '#8a8a8a' }}>
+                    Available
+                  </span>
+                </div>
+              </div>
+              <span className="absolute top-4 left-4 w-6 h-6 border-l border-t border-sky-400/50" />
+              <span className="absolute top-4 right-4 w-6 h-6 border-r border-t border-sky-400/50" />
+            </div>
           </div>
         </div>
       </div>
@@ -1132,6 +1240,16 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
               <h2 className="text-2xl font-semibold tracking-[-0.01em]" style={{ color: '#e8e4de' }}>
                 {project.name}
               </h2>
+              <div className="flex flex-wrap items-center gap-2 mt-3">
+                <span className="font-mono text-[8px] tracking-[0.18em] uppercase" style={{ color: '#555' }}>
+                  Manually coded
+                </span>
+                {project.status && (
+                  <span className="font-mono text-[8px] tracking-[0.18em] uppercase" style={{ color: '#38bdf8' }}>
+                    • {project.status}
+                  </span>
+                )}
+              </div>
             </div>
             <button
               onClick={onClose}
@@ -1196,7 +1314,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
         {/* Footer */}
         <div className="px-8 pb-8 flex gap-3">
           <a
-            href="https://github.com/alinaeem"
+            href={project.repository ?? 'https://github.com/k201751'}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 font-mono text-[10px] tracking-[0.15em] uppercase px-5 py-3 transition-all duration-200"
@@ -1267,6 +1385,11 @@ function ProjectCard({
       >
         {project.name}
       </h3>
+
+      <div className="flex items-center gap-2 mb-3 font-mono text-[8px] tracking-[0.18em] uppercase">
+        <span style={{ color: '#555' }}>Manually coded</span>
+        {project.status && <span style={{ color: '#38bdf8' }}>• {project.status}</span>}
+      </div>
 
       <p className="text-[13px] leading-relaxed mb-6" style={{ color: '#484848' }}>
         {project.description}
@@ -1703,9 +1826,9 @@ function Contact() {
             <Reveal delay={150}>
               <div className="space-y-5">
                 {[
-                  { label: 'Email', value: 'ali.naeem@email.com', href: 'mailto:ali.naeem@email.com' },
-                  { label: 'LinkedIn', value: 'linkedin.com/in/alinaeem', href: 'https://linkedin.com/in/alinaeem' },
-                  { label: 'GitHub', value: 'github.com/alinaeem', href: 'https://github.com/alinaeem' },
+                  { label: 'Email', value: 'alinaeemcys@gmail.com', href: 'mailto:alinaeemcys@gmail.com' },
+                  { label: 'LinkedIn', value: 'linkedin.com/in/aliiinaeem', href: 'https://linkedin.com/in/aliiinaeem' },
+                  { label: 'GitHub', value: 'github.com/k201751', href: 'https://github.com/k201751' },
                 ].map((item) => (
                   <div key={item.label} className="flex gap-6 items-baseline">
                     <div
@@ -1949,19 +2072,19 @@ function Footer() {
           </div>
 
           <div className="flex items-center gap-6">
-            <a href="https://github.com/alinaeem" target="_blank" rel="noopener noreferrer" style={{ color: '#333' }}
+            <a href="https://github.com/k201751" target="_blank" rel="noopener noreferrer" style={{ color: '#333' }}
               onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = '#e8e4de')}
               onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = '#333')}
             >
               <GithubIcon size={16} />
             </a>
-            <a href="https://linkedin.com/in/alinaeem" target="_blank" rel="noopener noreferrer" style={{ color: '#333' }}
+            <a href="https://linkedin.com/in/aliiinaeem" target="_blank" rel="noopener noreferrer" style={{ color: '#333' }}
               onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = '#e8e4de')}
               onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = '#333')}
             >
               <LinkedinIcon size={16} />
             </a>
-            <a href="mailto:ali.naeem@email.com" style={{ color: '#333', fontSize: '13px' }}
+            <a href="mailto:alinaeemcys@gmail.com" style={{ color: '#333', fontSize: '13px' }}
               onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = '#e8e4de')}
               onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = '#333')}
             >
@@ -1992,6 +2115,7 @@ export default function App() {
   return (
     <div style={{ background: '#0b0b0b', color: '#e8e4de', minHeight: '100vh' }}>
       <Navbar />
+      <HireNotification />
       <main>
         <Hero />
         <Stats />
