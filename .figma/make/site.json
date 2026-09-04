@@ -1,0 +1,10 @@
+{
+  "description": "Showcases a professional software engineer's expertise in AI, backend, and data engineering through a clean, recruiter-focused portfolio with detailed projects and skills.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
