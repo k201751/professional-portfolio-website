@@ -1867,7 +1867,7 @@ function Contact() {
                   Get in touch
                 </a>
                 <a
-                  href="#"
+                  href="/resume.pdf"
                   className="flex items-center gap-2 px-6 py-3 font-mono text-[10px] tracking-[0.15em] uppercase transition-all duration-200"
                   style={{ color: '#666', border: '1px solid rgba(255,255,255,0.1)' }}
                   onMouseEnter={(e) => {
