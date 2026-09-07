@@ -4,6 +4,10 @@ const profileImage = import.meta.env.PROD
   ? 'https://professional-portfolio-website-alinaeemcys-2797s-projects.vercel.app/profile.JPG'
   : '/profile.JPG'
 
+const resumeLink = import.meta.env.PROD
+  ? 'https://professional-portfolio-website-alinaeemcys-2797s-projects.vercel.app/Ali-Naeem-Resume.pdf'
+  : '/Ali-Naeem-Resume.pdf'
+
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 interface Experience {
@@ -698,7 +702,8 @@ function Navbar() {
               <LinkedinIcon />
             </a>
             <a
-              href="#contact"
+              href={resumeLink}
+              download="Ali-Naeem-Resume.pdf"
               className="font-mono text-[9px] tracking-[0.18em] uppercase px-4 py-2 transition-all duration-200"
               style={{
                 color: '#888',
@@ -760,7 +765,8 @@ function Navbar() {
               <LinkedinIcon />
             </a>
             <a
-              href="#contact"
+              href={resumeLink}
+              download="Ali-Naeem-Resume.pdf"
               className="font-mono text-[9px] tracking-[0.15em] uppercase px-4 py-2"
               style={{ color: '#888', border: '1px solid rgba(255,255,255,0.1)' }}
               onClick={() => setMenuOpen(false)}
@@ -1769,6 +1775,7 @@ function Contact() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   const validate = () => {
     const e: Record<string, string> = {}
@@ -1779,18 +1786,51 @@ function Contact() {
     return e
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitError('')
     const errs = validate()
     if (Object.keys(errs).length > 0) {
       setErrors(errs)
       return
     }
+
     setSending(true)
-    setTimeout(() => {
-      setSending(false)
+
+    try {
+      const response = await fetch('https://formsubmit.co/ajax/alinaeemcys@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          subject: form.subject.trim(),
+          message: form.message.trim(),
+          _subject: `Portfolio message: ${form.subject.trim()}`,
+          _template: 'table',
+        }),
+      })
+
+      const result = await response.json().catch(() => null)
+      if (!response.ok || result?.success === false) {
+        throw new Error(result?.message || 'The message could not be sent.')
+      }
+
       setSent(true)
-    }, 1500)
+      setForm({ name: '', email: '', subject: '', message: '' })
+      setErrors({})
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : 'The message could not be sent. Please email me directly instead.',
+      )
+    } finally {
+      setSending(false)
+    }
   }
 
   const inputStyle = (field: string) => ({
@@ -1858,7 +1898,7 @@ function Contact() {
             <Reveal delay={200}>
               <div className="flex flex-wrap gap-4 mt-10">
                 <a
-                  href="mailto:ali.naeem@email.com"
+                  href="mailto:alinaeemcys@gmail.com"
                   className="flex items-center gap-2 px-6 py-3 font-mono text-[10px] tracking-[0.15em] uppercase transition-all duration-200"
                   style={{ background: '#38bdf8', color: '#0b0b0b', fontWeight: 500 }}
                   onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = '#7dd3fc')}
@@ -1867,7 +1907,8 @@ function Contact() {
                   Get in touch
                 </a>
                 <a
-                  href="/resume.pdf"
+                  href="https://github.com/k201751/professional-portfolio-website/raw/refs/heads/main/assets/resume.pdf?download=true"
+                  download="Ali-Naeem-Resume.pdf"
                   className="flex items-center gap-2 px-6 py-3 font-mono text-[10px] tracking-[0.15em] uppercase transition-all duration-200"
                   style={{ color: '#666', border: '1px solid rgba(255,255,255,0.1)' }}
                   onMouseEnter={(e) => {
@@ -2050,6 +2091,19 @@ function Contact() {
                 >
                   {sending ? 'Sending...' : 'Send Message'}
                 </button>
+                {submitError && (
+                  <p
+                    role="alert"
+                    className="font-mono text-[10px] leading-relaxed"
+                    style={{ color: 'rgba(248,113,113,0.9)' }}
+                  >
+                    {submitError} You can also email me at{' '}
+                    <a href="mailto:alinaeemcys@gmail.com" className="underline">
+                      alinaeemcys@gmail.com
+                    </a>
+                    .
+                  </p>
+                )}
               </form>
             )}
           </Reveal>
