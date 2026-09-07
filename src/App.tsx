@@ -163,6 +163,7 @@ const PROJECTS: Project[] = [
     challenge: 'Client feedback varies in detail and format, but the output must follow the same schema.',
     status: 'In Progress',
   },
+  
   {
     num: '06',
     name: 'Smart Traffic Monitoring System',
