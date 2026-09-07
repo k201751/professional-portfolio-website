@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
-import profileImage from '../assets/profile.JPG'
+
+const profileImage = import.meta.env.PROD
+  ? 'https://professional-portfolio-website-alinaeemcys-2797s-projects.vercel.app/profile.JPG'
+  : '/profile.JPG'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
