@@ -128,6 +128,43 @@ const PROJECTS: Project[] = [
   },
   {
     num: '03',
+    name: 'Heart Disease Predictor',
+    category: 'Machine Learning / Classification',
+    description:
+      'A machine learning notebook that predicts the presence of heart disease from patient health measurements.',
+    highlights: [
+      'Prepared a dataset with 303 patient records and 13 input features',
+      'Split the data into training and test sets using an 80/20 ratio',
+      'Trained a logistic regression model with scikit-learn',
+      'Measured 83.1% training accuracy and 90.2% test accuracy in the saved notebook run',
+      'Added a sample prediction flow for entering one patient record',
+    ],
+    tech: ['Python', 'Pandas', 'NumPy', 'scikit-learn', 'Jupyter'],
+    challenge:
+      'The dataset is small, so the result needs to be treated as a learning project rather than a clinical diagnostic tool.',
+    repository: 'https://github.com/k201751/Heart-Disease-Predictor',
+  },
+  {
+    num: '04',
+    name: 'Book Recommender System',
+    category: 'Machine Learning / Web Application',
+    description:
+      'A Flask web app that shows popular books and recommends similar titles from a book selected by the user.',
+    highlights: [
+      'Built a popularity-based page showing 50 books with ratings and vote counts',
+      'Used collaborative filtering and a precomputed similarity matrix to return five related books',
+      'Processed book, rating, and user data with Pandas and NumPy',
+      'Loaded prepared datasets and model outputs from serialized files for faster requests',
+      'Built the interface with Flask templates, HTML, and responsive CSS',
+      'Added Gunicorn startup configuration and a GitHub Actions syntax check',
+    ],
+    tech: ['Python', 'Flask', 'Pandas', 'NumPy', 'Collaborative Filtering', 'HTML', 'CSS'],
+    challenge:
+      'Book titles must match the prepared dataset, so the app checks for a valid title before reading its similarity scores.',
+    repository: 'https://github.com/k201751/Book-Rcommender-System',
+  },
+  {
+    num: '05',
     name: 'Fast Resume',
     category: 'Resume Tool',
     description: 'A resume project built to make creating and updating a resume faster.',
@@ -141,7 +178,7 @@ const PROJECTS: Project[] = [
     repository: 'https://github.com/k201751/fast-resume',
   },
   {
-    num: '04',
+    num: '06',
     name: 'Decentralised Identity Management System',
     category: 'Blockchain / Identity',
     description: 'A university project for storing and retrieving identity records through a MultiChain blockchain.',
@@ -156,7 +193,7 @@ const PROJECTS: Project[] = [
     repository: 'https://github.com/k201751/Decentralised-Identity-Management-System',
   },
   {
-    num: '05',
+    num: '07',
     name: 'Autonomous Ticket Generator',
     category: 'AI Engineering / Automation',
     description: 'A service that turns client feedback into project tickets and sends them to project management tools.',
@@ -172,7 +209,7 @@ const PROJECTS: Project[] = [
   },
   
   {
-    num: '06',
+    num: '08',
     name: 'Smart Traffic Monitoring System',
     category: 'Computer Vision / AI',
     description: 'A computer vision system that reads video feeds and reports traffic counts and flow.',
@@ -187,7 +224,7 @@ const PROJECTS: Project[] = [
     status: 'In Progress',
   },
   {
-    num: '07',
+    num: '09',
     name: 'RideMate',
     category: 'Full Stack Development',
     description: 'A ride-sharing web app for finding people travelling along similar routes.',
@@ -201,6 +238,7 @@ const PROJECTS: Project[] = [
     challenge: 'Routes needed to be compared without checking every possible path between two points.',
     repository: 'https://github.com/k201751/RideMate',
   },
+  
 ]
 
 const SKILLS: Record<string, string[]> = {
