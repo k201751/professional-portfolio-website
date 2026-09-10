@@ -26,7 +26,7 @@ interface Project {
   description: string
   highlights: string[]
   tech: string[]
-  challenge: string
+  challenges: string[]
   status?: 'In Progress'
   repository?: string
 }
@@ -97,10 +97,35 @@ const EXPERIENCES: Experience[] = [
 const PROJECTS: Project[] = [
   {
     num: '01',
+    name: 'AI Sales Co-Pilot',
+    category: 'Gen AI / RAG / Full Stack',
+    description:
+      'An R&D of real-time response suggestion generator for sales team calling optimised for specifically for the company. The development completed but the results were not ideal because generation was required to be under 1.5s but it exceeded 8s on average.',
+    highlights: [
+      'Generated real-time transcriptions using fast-whisper but the latency was too high of about 3-4 seconds and results were not accurate.',
+      'Fetched transcription from zoom API but the latency was still too high of about 3.2 seconds.',
+      'Generated real-time suggestion using Qwen-7B-Chat.',
+      'Built a RAG Pipeline to create a new collection in Qdrant and added a new document to the collection for each company specific information.',
+      'Built a new workflow for LLM to use the new collection to generate company specific suggestions.',
+      'Built a React and Electron based UI for the sales team to use the application using Codex.',
+      'Developed a FastAPI backend to handle the requests from the UI and communicate with the LLM and Qdrant.',
+      'LLM responded very closely to the company specific information but the latency was still too high of about 8 seconds on average with best approach.',
+
+    ],
+    tech: ['Python', 'FastAPI', 'React', 'SQLite', 'OLlama', 'Qdrant', 'Qwen', 'RAG', 'Electron'],
+    challenges:[
+      'The latency of the LLM was too high for real-time response generation, which made it difficult to use in a live sales call scenario. The challenge is yet to overcome.',
+      'Fast-Whisper was generating inaccurate transcription and the latency was too high. Used zoom API to fetch transcriptions.',
+      'Zoom integration was technical and relied on numerous setup steps and permissions, which made it difficult to implement and maintain. The team is exploring ways to simplify the integration and reduce the dependency on Zoom.',
+      'LLM was generating incorrect or irrelevant suggestions, which made it difficult to use in a live sales call. Implemented RAG for company specific information and results were satisfactory.',
+    ]
+  },
+  {
+    num: '02',
     name: 'Global Leads',
     category: 'Lead Intelligence / Data Engineering',
     description:
-      'A lead research tool that collected records from several sources and helped the operations team find missing business contact details.',
+      'A lead research tool that collected records from several sources and helped the operations team find missing business contact details. The system found the contact information 2 out of 10 times.',
     highlights: [
       'Collected lead records from a freelance marketplace, Yelp, and Google Business Profile, then cleaned and stored the data with Pandas.',
       'Used DuckDuckGo results to look for matching contact details published on the open web.',
@@ -108,30 +133,35 @@ const PROJECTS: Project[] = [
       'Built the API in Django REST Framework with JWT login, roles, user management, and password reset.',
       'Built a React and Vite admin portal for uploads, lead review, and role-based access.',
     ],
-    tech: ['Python', 'Django REST', 'React', 'MySQL', 'LangChain', 'Pandas'],
-    challenge:
+    tech: ['Python', 'Django REST', 'React', 'MySQL', 'LangChain', 'Pandas', 'DuckDuckGo API', 'Deepseek'],
+    challenges: [
       'Search results were often incomplete or unrelated. I added match scores and a review step so weak matches were not treated as confirmed contacts.',
-  },
-  {
-    num: '02',
-    name: 'AI Video Generation Pipeline',
-    category: 'Generative AI',
-    description: 'A pipeline that creates video ads from generated clips, narration, and other assets.',
-    highlights: [
-      'Connected the generation, narration, and rendering steps',
-      'Automated asset preparation and video assembly',
-      'Added settings so the workflow could be reused for different ads',
-      'Checked outputs before they moved to the next stage',
     ],
-    tech: ['Python', 'Generative AI', 'Automation', 'Video Processing'],
-    challenge: 'Generated clips were not always usable, so the pipeline needed checks and retry rules.',
   },
   {
     num: '03',
+    name: 'AI Video Generation Pipeline',
+    category: 'Generative AI',
+    description: 'An autonomous advertisement generation pipeline for a real estate agency, the pipeline was triggered once a new real estate project was detected in database. The pipeline generated about 5 AI Videos, a script, and a narration from description of real estate project from database, stitched the videos together along with the narration and posted it as the advertisement video on the real estate agency website. The results were satisfactory with no flaw in terms of requirements.',
+    highlights: [
+      'Connected the generation, narration, and rendering steps',
+      'Automated asset preparation using Google Gemini API',
+      'Automated script generation from using OpenAI API',
+      'Automated narration generation using ElevenLabs API',
+      'Stitched generated clips together with narration using MoviePy',
+      'Integrated the pipeline with the existing database and website for automatic ad generation',
+    ],
+    tech: ['Python', 'MoviePy', 'Gemini API', 'OpenAI API', 'ElevenLabs API', 'Django REST', 'SQLite'],
+    challenges: [
+      'Generated clips were not always usable, so the pipeline needed checks and retry rules.',
+    ],
+  },
+  {
+    num: '04',
     name: 'Heart Disease Predictor',
     category: 'Machine Learning / Classification',
     description:
-      'A machine learning notebook that predicts the presence of heart disease from patient health measurements.',
+      'A machine learning notebook that predicts the presence of heart disease from patient health measurements. Results were satisfactory with 90.2% test accuracy and 83.1% training accuracy.',
     highlights: [
       'Prepared a dataset with 303 patient records and 13 input features',
       'Split the data into training and test sets using an 80/20 ratio',
@@ -140,16 +170,17 @@ const PROJECTS: Project[] = [
       'Added a sample prediction flow for entering one patient record',
     ],
     tech: ['Python', 'Pandas', 'NumPy', 'scikit-learn', 'Jupyter'],
-    challenge:
+    challenges: [
       'The dataset is small, so the result needs to be treated as a learning project rather than a clinical diagnostic tool.',
+    ],
     repository: 'https://github.com/k201751/Heart-Disease-Predictor',
   },
   {
-    num: '04',
+    num: '05',
     name: 'Book Recommender System',
     category: 'Machine Learning / Web Application',
     description:
-      'A Flask web app that shows popular books and recommends similar titles from a book selected by the user.',
+      'A Flask web app that shows popular books and recommends similar titles from a book selected by the user. Recommendations were relevant, as many books recommended were already read by users with similar preference.',
     highlights: [
       'Built a popularity-based page showing 50 books with ratings and vote counts',
       'Used collaborative filtering and a precomputed similarity matrix to return five related books',
@@ -159,12 +190,13 @@ const PROJECTS: Project[] = [
       'Added Gunicorn startup configuration and a GitHub Actions syntax check',
     ],
     tech: ['Python', 'Flask', 'Pandas', 'NumPy', 'Collaborative Filtering', 'HTML', 'CSS'],
-    challenge:
+    challenges: [
       'Book titles must match the prepared dataset, so the app checks for a valid title before reading its similarity scores.',
+    ],
     repository: 'https://github.com/k201751/Book-Rcommender-System',
   },
   {
-    num: '05',
+    num: '06',
     name: 'Fast Resume',
     category: 'Resume Tool',
     description: 'A resume project built to make creating and updating a resume faster.',
@@ -174,11 +206,13 @@ const PROJECTS: Project[] = [
       'Published the source code on GitHub',
     ],
     tech: ['Manually Coded'],
-    challenge: 'Keeping resume content easy to update without making the layout hard to maintain.',
+    challenges: [
+      'Keeping resume content easy to update without making the layout hard to maintain.',
+    ],
     repository: 'https://github.com/k201751/fast-resume',
   },
   {
-    num: '06',
+    num: '07',
     name: 'Decentralised Identity Management System',
     category: 'Blockchain / Identity',
     description: 'A university project for storing and retrieving identity records through a MultiChain blockchain.',
@@ -189,11 +223,13 @@ const PROJECTS: Project[] = [
       'Matched a supplied photo before returning identity information',
     ],
     tech: ['Python', 'MultiChain', 'Blockchain', 'Client–Server'],
-    challenge: 'Coordinating record storage, photo matching, and access across separate client and server scripts.',
+    challenges: [
+      'Coordinating record storage, photo matching, and access across separate client and server scripts.',
+    ],
     repository: 'https://github.com/k201751/Decentralised-Identity-Management-System',
   },
   {
-    num: '07',
+    num: '08',
     name: 'Autonomous Ticket Generator',
     category: 'AI Engineering / Automation',
     description: 'A service that turns client feedback into project tickets and sends them to project management tools.',
@@ -204,12 +240,14 @@ const PROJECTS: Project[] = [
       'Added templates for different client requirements',
     ],
     tech: ['Python', 'FastAPI', 'LLMs', 'Pydantic', 'Webhooks'],
-    challenge: 'Client feedback varies in detail and format, but the output must follow the same schema.',
+    challenges: [
+      'Client feedback varies in detail and format, but the output must follow the same schema.',
+    ],
     status: 'In Progress',
   },
   
   {
-    num: '08',
+    num: '09',
     name: 'Smart Traffic Monitoring System',
     category: 'Computer Vision / AI',
     description: 'A computer vision system that reads video feeds and reports traffic counts and flow.',
@@ -220,11 +258,13 @@ const PROJECTS: Project[] = [
       'Generating alerts and reports',
     ],
     tech: ['Python', 'OpenCV', 'Computer Vision', 'Machine Learning'],
-    challenge: 'The system needs to process video close to real time on a machine without a dedicated GPU.',
+    challenges: [
+      'The system needs to process video close to real time on a machine without a dedicated GPU.',
+    ],
     status: 'In Progress',
   },
   {
-    num: '09',
+    num: '10',
     name: 'RideMate',
     category: 'Full Stack Development',
     description: 'A ride-sharing web app for finding people travelling along similar routes.',
@@ -235,7 +275,9 @@ const PROJECTS: Project[] = [
       'Stored users, routes, and rides in SQL',
     ],
     tech: ['C#', 'ASP.NET MVC', 'SQL'],
-    challenge: 'Routes needed to be compared without checking every possible path between two points.',
+    challenges: [
+      'Routes needed to be compared without checking every possible path between two points.',
+    ],
     repository: 'https://github.com/k201751/RideMate',
   },
   
@@ -1343,7 +1385,11 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
               Primary Challenge
             </div>
             <p className="text-[13px] leading-relaxed" style={{ color: '#5a5a5a', borderLeft: '2px solid rgba(56,189,248,0.3)', paddingLeft: '1rem' }}>
-              {project.challenge}
+              {project.challenges.map((c, i) => (
+                <span key={i} className="block mb-2 last:mb-0">
+                  {c}
+                </span>
+              ))}
             </p>
           </div>
 
