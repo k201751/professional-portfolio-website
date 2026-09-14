@@ -198,7 +198,7 @@ const PROJECTS: Project[] = [
   {
     num: '06',
     name: 'Fast Resume',
-    category: 'Resume Tool',
+    category: 'Web Application',
     description: 'A resume project built to make creating and updating a resume faster.',
     highlights: [
       'Organised resume content into reusable sections',
