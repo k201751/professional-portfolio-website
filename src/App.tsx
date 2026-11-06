@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const profileImage = import.meta.env.PROD
   ? 'https://professional-portfolio-website-alinaeemcys-2797s-projects.vercel.app/profile.JPG'
@@ -85,7 +86,7 @@ const EXPERIENCES: Experience[] = [
     description:
       'Project-based engagement building backend systems and full-stack features for client web applications.',
     highlights: [
-      'Worked on a multi-tenant web system, developing backend functionality using Django REST Framework.',
+      'Worked on a multi-tenant web system featuring role-based access control (RBAC) and secure authentication using Django REST Framework.',
       'Built a QR code generator web application from specification through to deployment.',
       'Worked with React on the frontend and MySQL for relational data persistence.',
       'Used Pandas for data-related processing, transformation, and reporting tasks.',
@@ -97,6 +98,108 @@ const EXPERIENCES: Experience[] = [
 const PROJECTS: Project[] = [
   {
     num: '01',
+    name: 'Decentralised Identity Management System',
+    category: 'Blockchain / Identity',
+    description:
+      'A blockchain-based identity system securing on-chain data via cryptographic hashing and multi-signature authorization.',
+    highlights: [
+      'Stored identity details and a photo on a blockchain stream',
+      'Protected record input with multisignature controls',
+      'Built separate Python client and server scripts for adding and retrieving records',
+      'Matched a supplied photo before returning identity information',
+    ],
+    tech: ['Python', 'MultiChain', 'Blockchain', 'Client–Server'],
+    challenges: [
+      'Coordinating record storage, photo matching, and access across separate client and server scripts.',
+    ],
+    repository: 'https://github.com/k201751/Decentralised-Identity-Management-System',
+  },
+  {
+    num: '02',
+    name: 'Secure File Transfer System',
+    category: 'Cryptography / P2P',
+    description:
+      'A peer-to-peer file transfer application implementing AES encryption and SHA-256 integrity verification to prevent tampering.',
+    highlights: [
+      'Implemented end-to-end AES encryption for peer-to-peer file transmission',
+      'Verified file integrity at receiver side using SHA-256 cryptographic hashes',
+      'Built custom packet framing and socket handling in Python',
+    ],
+    tech: ['Python', 'Cryptography', 'AES', 'SHA-256'],
+    challenges: [
+      'Ensuring reliable chunked transmission and strict hash verification before writing received files to disk.',
+    ],
+  },
+  {
+    num: '03',
+    name: 'Malware Signature Scanner',
+    category: 'Security Tooling',
+    description:
+      'A Python command-line tool that scans files against custom YARA rules to detect and flag malicious signatures and patterns.',
+    highlights: [
+      'Compiled and evaluated custom YARA rules against target files and directories',
+      'Flagged suspicious byte sequences, strings, and known malware indicators',
+      'Designed a clean CLI interface for recursive scanning and structured reporting',
+    ],
+    tech: ['Python', 'YARA', 'CLI'],
+    challenges: [
+      'Minimizing false positives while scanning diverse binary and script formats.',
+    ],
+  },
+  {
+    num: '04',
+    name: 'Command-Line Chat Room',
+    category: 'Network Security',
+    description:
+      'A multi-client chat application built using Python TCP sockets for real-time communication and connection management.',
+    highlights: [
+      'Architected a concurrent TCP server managing multiple simultaneous client connections',
+      'Handled message broadcasting, client registration, and graceful disconnection handling',
+      'Implemented thread-safe socket communication in Python',
+    ],
+    tech: ['Python', 'TCP Sockets', 'Networking'],
+    challenges: [
+      'Managing concurrent client state and preventing dropped or interleaved messages across threads.',
+    ],
+  },
+  {
+    num: '05',
+    name: 'Global Leads',
+    category: 'Lead Intelligence / Data Engineering',
+    description:
+      'A lead research tool that collected records from several sources and helped the operations team find missing business contact details. The system found the contact information 2 out of 10 times.',
+    highlights: [
+      'Collected lead records from a freelance marketplace, Yelp, and Google Business Profile, then cleaned and stored the data with Pandas.',
+      'Used DuckDuckGo results to look for matching contact details published on the open web.',
+      'Found useful matches for about 20% of masked records during testing and sent uncertain results for manual review.',
+      'Built the API in Django REST Framework with JWT login, roles, user management, and password reset.',
+      'Built a React and Vite admin portal for uploads, lead review, and role-based access.',
+    ],
+    tech: ['Python', 'Django REST', 'React', 'MySQL', 'LangChain', 'Pandas', 'DuckDuckGo API', 'Deepseek'],
+    challenges: [
+      'Search results were often incomplete or unrelated. I added match scores and a review step so weak matches were not treated as confirmed contacts.',
+    ],
+  },
+  {
+    num: '06',
+    name: 'AI Video Generation Pipeline',
+    category: 'Generative AI',
+    description: 'An autonomous advertisement generation pipeline for a real estate agency, the pipeline was triggered once a new real estate project was detected in database. The pipeline generated about 5 AI Videos, a script, and a narration from description of real estate project from database, stitched the videos together along with the narration and posted it as the advertisement video on the real estate agency website. The results were satisfactory with no flaw in terms of requirements.',
+    highlights: [
+      'Connected the generation, narration, and rendering steps',
+      'Automated asset preparation using Google Gemini API',
+      'Automated script generation from using OpenAI API',
+      'Automated narration generation using ElevenLabs API',
+      'Stitched generated clips together with narration using MoviePy',
+      'Integrated the pipeline with the existing database and website for automatic ad generation',
+    ],
+    tech: ['Python', 'MoviePy', 'Gemini API', 'OpenAI API', 'ElevenLabs API', 'Django REST', 'SQLite'],
+    challenges: [
+      'Generated clips were not always usable, so the pipeline needed checks and retry rules.',
+    ],
+  },
+  {
+    num: '07',
     name: 'AI Sales Co-Pilot',
     category: 'Gen AI / RAG / Full Stack',
     description:
@@ -121,43 +224,7 @@ const PROJECTS: Project[] = [
     ]
   },
   {
-    num: '02',
-    name: 'Global Leads',
-    category: 'Lead Intelligence / Data Engineering',
-    description:
-      'A lead research tool that collected records from several sources and helped the operations team find missing business contact details. The system found the contact information 2 out of 10 times.',
-    highlights: [
-      'Collected lead records from a freelance marketplace, Yelp, and Google Business Profile, then cleaned and stored the data with Pandas.',
-      'Used DuckDuckGo results to look for matching contact details published on the open web.',
-      'Found useful matches for about 20% of masked records during testing and sent uncertain results for manual review.',
-      'Built the API in Django REST Framework with JWT login, roles, user management, and password reset.',
-      'Built a React and Vite admin portal for uploads, lead review, and role-based access.',
-    ],
-    tech: ['Python', 'Django REST', 'React', 'MySQL', 'LangChain', 'Pandas', 'DuckDuckGo API', 'Deepseek'],
-    challenges: [
-      'Search results were often incomplete or unrelated. I added match scores and a review step so weak matches were not treated as confirmed contacts.',
-    ],
-  },
-  {
-    num: '03',
-    name: 'AI Video Generation Pipeline',
-    category: 'Generative AI',
-    description: 'An autonomous advertisement generation pipeline for a real estate agency, the pipeline was triggered once a new real estate project was detected in database. The pipeline generated about 5 AI Videos, a script, and a narration from description of real estate project from database, stitched the videos together along with the narration and posted it as the advertisement video on the real estate agency website. The results were satisfactory with no flaw in terms of requirements.',
-    highlights: [
-      'Connected the generation, narration, and rendering steps',
-      'Automated asset preparation using Google Gemini API',
-      'Automated script generation from using OpenAI API',
-      'Automated narration generation using ElevenLabs API',
-      'Stitched generated clips together with narration using MoviePy',
-      'Integrated the pipeline with the existing database and website for automatic ad generation',
-    ],
-    tech: ['Python', 'MoviePy', 'Gemini API', 'OpenAI API', 'ElevenLabs API', 'Django REST', 'SQLite'],
-    challenges: [
-      'Generated clips were not always usable, so the pipeline needed checks and retry rules.',
-    ],
-  },
-  {
-    num: '04',
+    num: '08',
     name: 'Heart Disease Predictor',
     category: 'Machine Learning / Classification',
     description:
@@ -176,7 +243,7 @@ const PROJECTS: Project[] = [
     repository: 'https://github.com/k201751/Heart-Disease-Predictor',
   },
   {
-    num: '05',
+    num: '09',
     name: 'Book Recommender System',
     category: 'Machine Learning / Web Application',
     description:
@@ -196,74 +263,6 @@ const PROJECTS: Project[] = [
     repository: 'https://github.com/k201751/Book-Rcommender-System',
   },
   {
-    num: '06',
-    name: 'Fast Resume',
-    category: 'Web Application',
-    description: 'A resume project built to make creating and updating a resume faster.',
-    highlights: [
-      'Organised resume content into reusable sections',
-      'Focused on a quick editing and update workflow',
-      'Published the source code on GitHub',
-    ],
-    tech: ['Manually Coded'],
-    challenges: [
-      'Keeping resume content easy to update without making the layout hard to maintain.',
-    ],
-    repository: 'https://github.com/k201751/fast-resume',
-  },
-  {
-    num: '07',
-    name: 'Decentralised Identity Management System',
-    category: 'Blockchain / Identity',
-    description: 'A university project for storing and retrieving identity records through a MultiChain blockchain.',
-    highlights: [
-      'Stored identity details and a photo on a blockchain stream',
-      'Protected record input with multisignature controls',
-      'Built separate Python client and server scripts for adding and retrieving records',
-      'Matched a supplied photo before returning identity information',
-    ],
-    tech: ['Python', 'MultiChain', 'Blockchain', 'Client–Server'],
-    challenges: [
-      'Coordinating record storage, photo matching, and access across separate client and server scripts.',
-    ],
-    repository: 'https://github.com/k201751/Decentralised-Identity-Management-System',
-  },
-  {
-    num: '08',
-    name: 'Autonomous Ticket Generator',
-    category: 'AI Engineering / Automation',
-    description: 'A service that turns client feedback into project tickets and sends them to project management tools.',
-    highlights: [
-      'Built the service with FastAPI and webhooks',
-      'Used an LLM to pull ticket details from free-form feedback',
-      'Validated the generated JSON with Pydantic',
-      'Added templates for different client requirements',
-    ],
-    tech: ['Python', 'FastAPI', 'LLMs', 'Pydantic', 'Webhooks'],
-    challenges: [
-      'Client feedback varies in detail and format, but the output must follow the same schema.',
-    ],
-    status: 'In Progress',
-  },
-  
-  {
-    num: '09',
-    name: 'Smart Traffic Monitoring System',
-    category: 'Computer Vision / AI',
-    description: 'A computer vision system that reads video feeds and reports traffic counts and flow.',
-    highlights: [
-      'Detecting and tracking vehicles across video frames',
-      'Processing live and recorded video',
-      'Measuring traffic density and movement',
-      'Generating alerts and reports',
-    ],
-    tech: ['Python', 'OpenCV', 'Computer Vision', 'Machine Learning'],
-    challenges: [
-      'The system needs to process video close to real time on a machine without a dedicated GPU.',
-    ],
-    status: 'In Progress',
-  },
-  {
     num: '10',
     name: 'RideMate',
     category: 'Full Stack Development',
@@ -280,67 +279,82 @@ const PROJECTS: Project[] = [
     ],
     repository: 'https://github.com/k201751/RideMate',
   },
-  
 ]
 
 const SKILLS: Record<string, string[]> = {
-  Languages: ['Python', 'C / C++', 'JavaScript', 'C#', 'Shell', 'Rust', 'HTML', 'CSS'],
-  'AI / Machine Learning': [
-    'PyTorch',
-    'TensorFlow',
-    'Keras',
-    'Scikit-learn',
-    'Computer Vision',
-    'LLMs',
-    'RAG',
-    'LoRA',
-    'Fine-tuning',
-    'Generative AI',
+  'Security & Networking': [
+    'Nmap',
+    'Wireshark',
+    'Burp Suite',
+    'Kali Linux',
+    'Cryptography (AES, SHA-256)',
+    'IAM / RBAC',
+    'TCP/IP',
+    'Subnetting',
+    'Packet Tracer',
+    'Secure File Transfer',
   ],
-  Backend: ['FastAPI', 'Django', 'Flask', 'Node.js', 'REST APIs', 'Microservices'],
-  Frontend: ['React', 'Next.js', 'JavaScript', 'HTML', 'CSS'],
-  Data: ['Pandas', 'NumPy', 'PostgreSQL', 'MySQL', 'DuckDB'],
-  'Infrastructure / Tools': ['Docker', 'Git', 'Linux', 'Ubuntu', 'Jupyter', 'AWS S3'],
+  Languages: ['Python', 'C/C++', 'JavaScript', 'C#', 'Rust', 'SQL', 'Bash/Shell'],
+  'Backend & Frameworks': [
+    'FastAPI',
+    'Django',
+    'Flask',
+    'REST APIs',
+    'Microservices',
+    'React',
+    'Next.js',
+  ],
+  'Data & Infrastructure': [
+    'PostgreSQL',
+    'MySQL',
+    'BigQuery',
+    'Pandas',
+    'Docker',
+    'Git',
+    'AWS (IAM, Logging)',
+    'Azure',
+    'GCP',
+  ],
 }
 
 const SKILL_DESCRIPTIONS: Record<string, string> = {
-  Python: 'Primary language for backend, AI/ML, and data engineering.',
+  Nmap: 'Network discovery, port scanning, and service enumeration.',
+  Wireshark: 'Packet capture and deep network protocol traffic analysis.',
+  'Burp Suite': 'Web application security testing and HTTP proxy inspection.',
+  'Kali Linux': 'Penetration testing and security assessment environment.',
+  'Cryptography (AES, SHA-256)': 'Symmetric encryption and cryptographic hashing for data integrity.',
+  'IAM / RBAC': 'Identity and access management with role-based access controls.',
+  'TCP/IP': 'Core networking protocols, socket communication, and routing.',
+  Subnetting: 'Network segmentation and IP address space design.',
+  'Packet Tracer': 'Network topology simulation and routing configuration.',
+  'Secure File Transfer': 'Encrypted peer-to-peer and client-server file transmission.',
+  Python: 'Primary language for security tooling, backend services, and automation.',
+  'C/C++': 'Systems programming and performance-critical applications.',
   'C / C++': 'Systems programming and performance-critical applications.',
   JavaScript: 'Frontend development and Node.js server-side work.',
   'C#': 'ASP.NET applications and .NET ecosystem development.',
+  'Bash/Shell': 'Scripting, automation, and Linux system administration.',
   Shell: 'Scripting, automation, and Linux system administration.',
   Rust: 'Memory-safe systems programming and tooling.',
+  SQL: 'Relational database querying and schema design.',
   HTML: 'Semantic markup and web document structure.',
   CSS: 'Styling, layout, and responsive web design.',
-  PyTorch: 'Primary deep learning framework for model training.',
-  TensorFlow: 'Large-scale ML model training and deployment.',
-  Keras: 'High-level neural network API for rapid prototyping.',
-  'Scikit-learn': 'Classical ML algorithms and preprocessing pipelines.',
-  'Computer Vision': 'Image processing, detection, and visual AI systems.',
-  LLMs: 'Large language model integration, prompting, and orchestration.',
-  RAG: 'Retrieval-Augmented Generation for knowledge-grounded AI.',
-  LoRA: 'Low-rank adaptation for efficient model fine-tuning.',
-  'Fine-tuning': 'Adapting pre-trained models to domain-specific tasks.',
-  'Generative AI': 'Image, video, and text generation systems.',
   FastAPI: 'High-performance async Python APIs and microservices.',
-  Django: 'Full-featured Python web framework for production apps.',
+  Django: 'Full-featured Python web framework with built-in security controls.',
   Flask: 'Lightweight Python framework for APIs and small services.',
-  'Node.js': 'JavaScript runtime for server-side API development.',
-  'REST APIs': 'Designing, building, and consuming HTTP services.',
+  'REST APIs': 'Designing, building, and securing HTTP services.',
   Microservices: 'Service-oriented architecture and distributed systems.',
   React: 'Component-based UI and single-page applications.',
   'Next.js': 'React framework with SSR, SSG, and full-stack support.',
   Pandas: 'Data manipulation, analysis, and ETL pipelines.',
-  NumPy: 'Numerical computing and array operations.',
   PostgreSQL: 'Production-grade relational database with advanced features.',
   MySQL: 'Widely-used relational database for web applications.',
-  DuckDB: 'In-process analytical database for fast local data work.',
+  BigQuery: 'Serverless cloud data warehouse for analytics at scale.',
   Docker: 'Containerization and reproducible environment deployment.',
   Git: 'Version control and collaborative development workflows.',
-  Linux: 'Primary development environment; comfortable with CLI and admin.',
-  Ubuntu: 'Preferred Linux distribution for development and server use.',
-  Jupyter: 'Interactive computing for data exploration and ML prototyping.',
-  'AWS S3': 'Cloud object storage for scalable asset and data management.',
+  'AWS (IAM, Logging)': 'Cloud identity management, access policies, and audit logging.',
+  Azure: 'Cloud data pipelines and enterprise infrastructure services.',
+  GCP: 'Google Cloud Platform analytics and backend deployment.',
 }
 
 const PRINCIPLES = [
@@ -367,13 +381,11 @@ const PRINCIPLES = [
 ]
 
 const CURRENT_FOCUS_ITEMS = [
-  'AI Engineering',
-  'LLM Applications',
-  'RAG Systems',
-  'Machine Learning',
-  'Computer Vision',
-  'Data Engineering',
-  'Scalable Backend Systems',
+  'Application Security (AppSec)',
+  'Cloud Security',
+  'Threat Detection & Log Analysis',
+  'Secure Coding Practices',
+  'Vulnerability Assessment',
 ]
 
 // ── Hooks ──────────────────────────────────────────────────────────────────────
@@ -737,7 +749,7 @@ function Navbar() {
               className="font-mono text-[8px] tracking-[0.22em] uppercase mt-0.5"
               style={{ color: '#3a3a3a' }}
             >
-              Software Engineer
+              Cybersecurity & Software Engineer
             </div>
           </a>
 
@@ -925,9 +937,9 @@ function Hero() {
                 animation: 'fadeSlideUp 0.8s ease 0.25s both',
               }}
             >
-              Software Engineer building intelligent,
+              Cybersecurity graduate & software engineer building
               <br className="hidden sm:block" />
-              <span style={{ color: '#6b6b6b' }}> reliable systems.</span>
+              <span style={{ color: '#6b6b6b' }}> secure, reliable systems.</span>
             </h1>
 
             <p
@@ -937,9 +949,10 @@ function Hero() {
                 animation: 'fadeSlideUp 0.8s ease 0.4s both',
               }}
             >
-              Software engineer with experience across backend development, AI/ML systems, data
-              pipelines, and modern web applications. I enjoy turning complex technical problems into
-              practical, scalable software.
+              BSc Cybersecurity graduate with professional software engineering experience. I combine
+              a strong development background (Python, FastAPI, Django) with hands-on security skills
+              (Wireshark, Nmap, Burp Suite, Kali Linux) to build secure applications and analyze
+              network threats.
             </p>
 
             {/* Metadata row */}
@@ -949,7 +962,7 @@ function Hero() {
             >
               {[
                 { label: 'Based in Karachi, Pakistan' },
-                { label: 'Open to Software Engineering / AI / Data roles' },
+                { label: 'Open to Junior Security Engineer / AppSec / DevSecOps roles' },
                 { label: 'Available for opportunities' },
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-2">
@@ -970,7 +983,7 @@ function Hero() {
               style={{ animation: 'fadeSlideUp 0.8s ease 0.7s both' }}
             >
               <a
-                href="#experience"
+                href="#projects"
                 className="group flex items-center gap-2 px-7 py-3.5 text-[12px] font-mono tracking-[0.15em] uppercase font-medium transition-all duration-200"
                 style={{
                   background: '#e8e4de',
@@ -985,11 +998,11 @@ function Hero() {
                   el.style.background = '#e8e4de'
                 }}
               >
-                View Experience
+                Explore Security Projects
                 <ArrowIcon />
               </a>
               <a
-                href="#projects"
+                href="#experience"
                 className="flex items-center gap-2 px-7 py-3.5 text-[12px] font-mono tracking-[0.15em] uppercase transition-all duration-200"
                 style={{
                   color: '#888',
@@ -1006,7 +1019,7 @@ function Hero() {
                   el.style.borderColor = 'rgba(255,255,255,0.1)'
                 }}
               >
-                Explore Projects
+                View Experience
               </a>
             </div>
           </div>
@@ -1036,7 +1049,7 @@ function Hero() {
               <div className="absolute left-5 right-5 bottom-5 flex items-end justify-between gap-4">
                 <div>
                   <div className="font-mono text-[9px] tracking-[0.24em] uppercase mb-1" style={{ color: '#38bdf8' }}>
-                    Software Engineer
+                    Cybersecurity & Software Engineer
                   </div>
                   <div className="text-lg font-semibold tracking-[-0.02em]" style={{ color: '#e8e4de' }}>
                     Ali Naeem
@@ -1064,9 +1077,9 @@ function Hero() {
 function Stats() {
   const stats = [
     { value: '01+', label: 'Years professional experience' },
-    { value: '05+', label: 'Production projects shipped' },
-    { value: '04+', label: 'Programming languages' },
-    { value: 'AI / ML', label: 'Primary specialization' },
+    { value: '04+', label: 'Security & Software Projects' },
+    { value: '08+', label: 'Programming languages & tools' },
+    { value: 'BSc', label: 'Cybersecurity Degree (FAST-NUCES)' },
   ]
 
   return (
@@ -1120,9 +1133,7 @@ function About() {
                 className="text-[1.9rem] lg:text-[2.4rem] font-semibold tracking-[-0.02em] leading-[1.15] mb-8"
                 style={{ color: '#e8e4de' }}
               >
-                Engineering across software,
-                <br />
-                data, and AI.
+                Bridging development and security.
               </h2>
             </Reveal>
 
@@ -1130,19 +1141,17 @@ function About() {
               <div className="space-y-4 text-[15px] leading-[1.8]" style={{ color: '#6b6b6b' }}>
                 <p>
                   I have a background in cybersecurity and software engineering, having studied at
-                  FAST–NUCES and built production systems across backend engineering, AI/ML pipelines,
-                  data infrastructure, and web applications during my early career.
+                  FAST–NUCES and built production systems across backend engineering, data
+                  infrastructure, and web applications.
                 </p>
                 <p>
-                  My work spans REST API development, microservice architecture, computer vision
-                  systems, generative AI pipelines, automation workflows, and data engineering —
-                  typically in Python-first environments, with experience in React-based frontends and
-                  ASP.NET applications.
+                  My technical focus is shifting toward Application Security (AppSec) and Security
+                  Engineering. I leverage my coding experience to understand how systems are built, and
+                  my security training to understand how they are broken and defended.
                 </p>
                 <p>
-                  The goal: build reliable, maintainable software while developing deeper expertise in
-                  AI engineering and machine learning systems — bridging the gap between ML research
-                  and production-grade deployment.
+                  The goal: build resilient, secure software while developing deeper expertise in
+                  vulnerability assessment, threat mitigation, and cloud security.
                 </p>
               </div>
             </Reveal>
@@ -1174,9 +1183,9 @@ function About() {
                 {
                   heading: 'Focus',
                   lines: [
-                    'AI Engineering',
-                    'Software Engineering',
-                    'Data Engineering',
+                    'Application Security',
+                    'Security Engineering',
+                    'DevSecOps',
                   ],
                 },
               ].map((block) => (
@@ -1794,7 +1803,7 @@ function CurrentFocus() {
             >
               currently_building{' '}
               <span style={{ color: '#38bdf8' }}>
-                AI systems that connect models, data, and real-world software.
+                secure systems and resilient applications.
               </span>
             </div>
           </div>
@@ -1941,13 +1950,13 @@ function Contact() {
                 className="text-[2.2rem] lg:text-[3rem] font-semibold tracking-[-0.02em] leading-[1.1] mb-6"
                 style={{ color: '#e8e4de' }}
               >
-                Have a problem worth building?
+                Have a problem worth securing?
               </h2>
             </Reveal>
             <Reveal delay={100}>
               <p className="text-[14px] leading-relaxed mb-12" style={{ color: '#5a5a5a' }}>
-                I'm open to software engineering, AI engineering, data engineering, and machine
-                learning opportunities. Always happy to discuss interesting technical challenges.
+                I'm open to Junior Security Engineer, Application Security, and DevSecOps
+                opportunities. Always happy to discuss security challenges and secure system design.
               </p>
             </Reveal>
 
@@ -2209,7 +2218,7 @@ function Footer() {
               Ali Naeem
             </div>
             <div className="font-mono text-[9px] tracking-[0.18em]" style={{ color: '#2e2e2e' }}>
-              Software Engineer · AI · Data · Systems
+              Software Engineer · Cybersecurity · AppSec
             </div>
           </div>
 
