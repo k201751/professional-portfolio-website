@@ -5,9 +5,8 @@ const profileImage = import.meta.env.PROD
   ? 'https://professional-portfolio-website-alinaeemcys-2797s-projects.vercel.app/profile.JPG'
   : '/profile.JPG'
 
-const resumeLink = import.meta.env.PROD
-  ? 'https://professional-portfolio-website-alinaeemcys-2797s-projects.vercel.app/Ali-Naeem-Resume.pdf'
-  : '/Ali-Naeem-Resume.pdf'
+const resumeLink = '/Ali-Naeem-Resume.pdf'
+const cyberResumeLink = '/Ali-Naeem-Cybersecurity-Resume.pdf'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -793,27 +792,6 @@ function Navbar() {
             >
               <LinkedinIcon />
             </a>
-            <a
-              href={resumeLink}
-              download="Ali-Naeem-Resume.pdf"
-              className="font-mono text-[9px] tracking-[0.18em] uppercase px-4 py-2 transition-all duration-200"
-              style={{
-                color: '#888',
-                border: '1px solid rgba(255,255,255,0.1)',
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLElement
-                el.style.color = '#38bdf8'
-                el.style.borderColor = 'rgba(56,189,248,0.4)'
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLElement
-                el.style.color = '#888'
-                el.style.borderColor = 'rgba(255,255,255,0.1)'
-              }}
-            >
-              Resume
-            </a>
           </div>
 
           {/* Mobile toggle */}
@@ -855,15 +833,6 @@ function Navbar() {
             </a>
             <a href="https://linkedin.com/in/aliiinaeem" target="_blank" rel="noopener noreferrer" style={{ color: '#444' }}>
               <LinkedinIcon />
-            </a>
-            <a
-              href={resumeLink}
-              download="Ali-Naeem-Resume.pdf"
-              className="font-mono text-[9px] tracking-[0.15em] uppercase px-4 py-2"
-              style={{ color: '#888', border: '1px solid rgba(255,255,255,0.1)' }}
-              onClick={() => setMenuOpen(false)}
-            >
-              Resume
             </a>
           </div>
         </div>
@@ -1999,24 +1968,6 @@ function Contact() {
                 >
                   Get in touch
                 </a>
-                <a
-                  href="https://github.com/k201751/professional-portfolio-website/raw/refs/heads/main/assets/resume.pdf?download=true"
-                  download="Ali-Naeem-Resume.pdf"
-                  className="flex items-center gap-2 px-6 py-3 font-mono text-[10px] tracking-[0.15em] uppercase transition-all duration-200"
-                  style={{ color: '#666', border: '1px solid rgba(255,255,255,0.1)' }}
-                  onMouseEnter={(e) => {
-                    const el = e.currentTarget as HTMLElement
-                    el.style.color = '#e8e4de'
-                    el.style.borderColor = 'rgba(255,255,255,0.2)'
-                  }}
-                  onMouseLeave={(e) => {
-                    const el = e.currentTarget as HTMLElement
-                    el.style.color = '#666'
-                    el.style.borderColor = 'rgba(255,255,255,0.1)'
-                  }}
-                >
-                  Download Resume
-                </a>
               </div>
             </Reveal>
           </div>
@@ -2260,9 +2211,288 @@ function Footer() {
   )
 }
 
+// ── Resume Vault Page (/resume/) ───────────────────────────────────────────────
+
+interface ResumeEntry {
+  id: string
+  num: string
+  field: 'Cybersecurity' | 'Software & AI'
+  title: string
+  subtitle: string
+  description: string
+  fileUrl: string
+  downloadName: string
+  tags: string[]
+  updated: string
+}
+
+const RESUME_VAULT: ResumeEntry[] = [
+  {
+    id: 'cybersecurity',
+    num: '01',
+    field: 'Cybersecurity',
+    title: 'Cybersecurity & AppSec Resume',
+    subtitle: 'Junior Security Engineer · AppSec · DevSecOps',
+    description:
+      'Tailored for Cybersecurity, Application Security, and DevSecOps roles. Highlights BSc Cybersecurity (FAST-NUCES), security tooling (Kali Linux, Wireshark, Burp Suite, Nmap, YARA), cryptography & identity projects, and secure backend engineering.',
+    fileUrl: cyberResumeLink,
+    downloadName: 'Ali-Naeem-Cybersecurity-Resume.pdf',
+    tags: ['Kali Linux', 'Wireshark', 'Burp Suite', 'Nmap', 'Cryptography', 'IAM / RBAC', 'Python', 'FastAPI', 'AWS'],
+    updated: '2026',
+  },
+  {
+    id: 'ai-software',
+    num: '02',
+    field: 'Software & AI',
+    title: 'Software & AI Engineering Resume',
+    subtitle: 'Software Engineer · AI / ML · Data Engineering',
+    description:
+      'Tailored for Software Engineering, Backend, Data Engineering, and AI/ML roles. Highlights full-stack dashboard modernisation, GCP BigQuery & Azure Databricks ETL pipelines, AI video & RAG pipelines, and microservices.',
+    fileUrl: resumeLink,
+    downloadName: 'Ali-Naeem-Software-AI-Resume.pdf',
+    tags: ['Python', 'FastAPI', 'Django', 'Next.js', 'React', 'BigQuery', 'Databricks', 'RAG / LLMs', 'Docker'],
+    updated: '2026',
+  },
+]
+
+function ResumePage() {
+  const [activeFilter, setActiveFilter] = useState<'All' | 'Cybersecurity' | 'Software & AI'>('All')
+
+  useEffect(() => {
+    document.title = 'Ali Naeem — Resume Vault'
+    let meta = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null
+    if (!meta) {
+      meta = document.createElement('meta')
+      meta.name = 'robots'
+      document.head.appendChild(meta)
+    }
+    meta.content = 'noindex, nofollow'
+  }, [])
+
+  const filteredResumes =
+    activeFilter === 'All'
+      ? RESUME_VAULT
+      : RESUME_VAULT.filter((r) => r.field === activeFilter)
+
+  return (
+    <div style={{ background: '#0b0b0b', color: '#e8e4de', minHeight: '100vh' }} className="flex flex-col justify-between">
+      {/* Top Bar */}
+      <header
+        style={{
+          borderBottom: '1px solid rgba(255,255,255,0.05)',
+          background: 'rgba(11,11,11,0.94)',
+          backdropFilter: 'blur(16px)',
+        }}
+      >
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-12 h-[60px] flex items-center justify-between">
+          <a href="/" className="group">
+            <div
+              className="text-[13px] font-semibold tracking-[0.18em] uppercase"
+              style={{ color: '#e8e4de' }}
+            >
+              Ali Naeem
+            </div>
+            <div
+              className="font-mono text-[8px] tracking-[0.22em] uppercase mt-0.5"
+              style={{ color: '#38bdf8' }}
+            >
+              Private Resume Vault
+            </div>
+          </a>
+
+          <a
+            href="/"
+            className="font-mono text-[10px] tracking-[0.18em] uppercase px-4 py-2 transition-colors duration-200"
+            style={{
+              color: '#888',
+              border: '1px solid rgba(255,255,255,0.1)',
+            }}
+            onMouseEnter={(e) => {
+              const el = e.currentTarget as HTMLElement
+              el.style.color = '#e8e4de'
+              el.style.borderColor = 'rgba(255,255,255,0.2)'
+            }}
+            onMouseLeave={(e) => {
+              const el = e.currentTarget as HTMLElement
+              el.style.color = '#888'
+              el.style.borderColor = 'rgba(255,255,255,0.1)'
+            }}
+          >
+            ← Portfolio
+          </a>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-1 py-20 lg:py-28">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-12">
+          <div className="flex items-center gap-4 mb-10">
+            <span className="font-mono text-[10px] tracking-[0.25em]" style={{ color: '#38bdf8' }}>
+              /resume/
+            </span>
+            <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.06)' }} />
+            <span className="font-mono text-[10px] tracking-[0.25em] uppercase" style={{ color: '#3d3d3d' }}>
+              Unlisted Directory
+            </span>
+          </div>
+
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-14">
+            <div>
+              <h1
+                className="text-[2.2rem] sm:text-[2.8rem] font-semibold tracking-[-0.02em] leading-[1.1] mb-4"
+                style={{ color: '#e8e4de' }}
+              >
+                Resume Repository.
+              </h1>
+              <p className="text-[14px] leading-relaxed max-w-[560px]" style={{ color: '#6b6b6b' }}>
+                Direct access to field-specific resumes across Cybersecurity, Software Engineering, and AI.
+                Download a copy or open the PDF directly in your browser.
+              </p>
+            </div>
+
+            {/* Filter tabs */}
+            <div className="flex flex-wrap gap-2">
+              {(['All', 'Cybersecurity', 'Software & AI'] as const).map((tab) => {
+                const active = activeFilter === tab
+                return (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveFilter(tab)}
+                    className="font-mono text-[10px] tracking-[0.18em] uppercase px-4 py-2.5 transition-all duration-200 cursor-pointer"
+                    style={{
+                      color: active ? '#0b0b0b' : '#777',
+                      background: active ? '#38bdf8' : '#111111',
+                      border: `1px solid ${active ? '#38bdf8' : 'rgba(255,255,255,0.08)'}`,
+                      fontWeight: active ? 600 : 400,
+                    }}
+                  >
+                    {tab}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Resume Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {filteredResumes.map((item) => (
+              <div
+                key={item.id}
+                className="p-8 lg:p-10 flex flex-col justify-between transition-all duration-300"
+                style={{
+                  background: '#111111',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                }}
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-4 mb-6">
+                    <span className="font-mono text-[10px] tracking-[0.2em]" style={{ color: '#38bdf8' }}>
+                      {item.num} — {item.field}
+                    </span>
+                    <span
+                      className="font-mono text-[9px] tracking-[0.15em] uppercase px-2.5 py-1"
+                      style={{
+                        color: '#666',
+                        border: '1px solid rgba(255,255,255,0.07)',
+                      }}
+                    >
+                      PDF · {item.updated}
+                    </span>
+                  </div>
+
+                  <h2
+                    className="text-xl lg:text-2xl font-semibold tracking-[-0.01em] mb-2"
+                    style={{ color: '#e8e4de' }}
+                  >
+                    {item.title}
+                  </h2>
+
+                  <div
+                    className="font-mono text-[10px] tracking-[0.14em] uppercase mb-5"
+                    style={{ color: '#555' }}
+                  >
+                    {item.subtitle}
+                  </div>
+
+                  <p className="text-[13px] leading-relaxed mb-6" style={{ color: '#6b6b6b' }}>
+                    {item.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-2 mb-8">
+                    {item.tags.map((t) => (
+                      <TechChip key={t} label={t} />
+                    ))}
+                  </div>
+                </div>
+
+                <div
+                  className="flex flex-wrap gap-3 pt-6"
+                  style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
+                >
+                  <a
+                    href={item.fileUrl}
+                    download={item.downloadName}
+                    className="flex items-center gap-2 px-6 py-3 font-mono text-[10px] tracking-[0.16em] uppercase transition-all duration-200"
+                    style={{
+                      background: '#e8e4de',
+                      color: '#0b0b0b',
+                      fontWeight: 600,
+                    }}
+                    onMouseEnter={(e) => {
+                      const el = e.currentTarget as HTMLElement
+                      el.style.background = '#fff'
+                    }}
+                    onMouseLeave={(e) => {
+                      const el = e.currentTarget as HTMLElement
+                      el.style.background = '#e8e4de'
+                    }}
+                  >
+                    Download PDF <ArrowIcon />
+                  </a>
+
+                  <a
+                    href={item.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-6 py-3 font-mono text-[10px] tracking-[0.16em] uppercase transition-all duration-200"
+                    style={{
+                      color: '#888',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                    }}
+                    onMouseEnter={(e) => {
+                      const el = e.currentTarget as HTMLElement
+                      el.style.color = '#38bdf8'
+                      el.style.borderColor = 'rgba(56,189,248,0.4)'
+                    }}
+                    onMouseLeave={(e) => {
+                      const el = e.currentTarget as HTMLElement
+                      el.style.color = '#888'
+                      el.style.borderColor = 'rgba(255,255,255,0.1)'
+                    }}
+                  >
+                    Preview in Browser
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  )
+}
+
 // ── App ────────────────────────────────────────────────────────────────────────
 
 export default function App() {
+  const pathname = typeof window !== 'undefined' ? window.location.pathname.replace(/\/+$/, '') : ''
+
+  if (pathname === '/resume') {
+    return <ResumePage />
+  }
+
   return (
     <div style={{ background: '#0b0b0b', color: '#e8e4de', minHeight: '100vh' }}>
       <Navbar />
