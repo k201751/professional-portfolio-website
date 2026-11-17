@@ -1,6 +1,8 @@
 {
   "rewrites": [
     { "source": "/resume", "destination": "/index.html" },
-    { "source": "/resume/", "destination": "/index.html" }
+    { "source": "/resume/", "destination": "/index.html" },
+    { "source": "/ai", "destination": "/index.html" },
+    { "source": "/ai/", "destination": "/index.html" }
   ]
 }

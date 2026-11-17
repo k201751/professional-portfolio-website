@@ -147,18 +147,21 @@ const PROJECTS: Project[] = [
   },
   {
     num: '04',
-    name: 'Command-Line Chat Room',
-    category: 'Network Security',
+    name: 'Fraud Detection System',
+    category: 'Security Analytics / Machine Learning',
     description:
-      'A multi-client chat application built using Python TCP sockets for real-time communication and connection management.',
+      'A decoupled e-commerce fraud detection server and admin portal powered by an XGBoost classifier trained on 1.47M imbalanced transaction records, raising fraud recall from 16% to 70%.',
     highlights: [
-      'Architected a concurrent TCP server managing multiple simultaneous client connections',
-      'Handled message broadcasting, client registration, and graceful disconnection handling',
-      'Implemented thread-safe socket communication in Python',
+      'Built an independent Django fraud detection server and HTML/CSS admin portal with SQLite logging to score incoming checkout transactions from a mock e-commerce store in real time.',
+      'Trained an XGBoost classifier on 1.47M imbalanced e-commerce transactions (~19:1 class ratio) and loaded the serialized .pkl model for live transaction evaluation.',
+      'Engineered behavioral and temporal signals including billing-shipping address mismatch and decomposed transaction timestamps (year, month, day, weekday).',
+      'Resolved severe memory blow-ups during one-hot encoding by dropping high-cardinality identifiers, grouping customer locations to the top 50 categories, and using sparse matrices (73 features).',
+      'Corrected the 19:1 class imbalance using scale_pos_weight, increasing fraud recall from 16% to 70% on both the test split and held-out unseen validation data.',
     ],
-    tech: ['Python', 'TCP Sockets', 'Networking'],
+    tech: ['Python', 'Django', 'XGBoost', 'scikit-learn', 'Pandas', 'SQLite', 'HTML', 'CSS'],
     challenges: [
-      'Managing concurrent client state and preventing dropped or interleaved messages across threads.',
+      'One-hot encoding high-cardinality columns initially attempted to allocate 1.97 TiB of RAM; grouping locations and using sparse encoding reduced the matrix to 73 features.',
+      'Default training achieved 95.6% accuracy by predicting the majority class while missing 84% of fraud; reweighting positive-class errors via scale_pos_weight boosted fraud recall to 70%.',
     ],
   },
   {
@@ -280,12 +283,16 @@ const PROJECTS: Project[] = [
   },
 ]
 
+type PortfolioMode = 'cyber' | 'ai'
+
 const SKILLS: Record<string, string[]> = {
   'Security & Networking': [
     'Nmap',
     'Wireshark',
     'Burp Suite',
     'Kali Linux',
+    'OWASP Top 10',
+    'VAPT',
     'Cryptography (AES, SHA-256)',
     'IAM / RBAC',
     'TCP/IP',
@@ -316,18 +323,67 @@ const SKILLS: Record<string, string[]> = {
   ],
 }
 
+const AI_SKILLS: Record<string, string[]> = {
+  'AI & Machine Learning': [
+    'XGBoost',
+    'scikit-learn',
+    'TensorFlow / PyTorch',
+    'LangChain',
+    'RAG / Qdrant',
+    'OpenAI & Gemini APIs',
+    'ElevenLabs API',
+    'LoRA',
+    'NumPy',
+  ],
+  'Backend & Frameworks': [
+    'Python',
+    'FastAPI',
+    'Django',
+    'Flask',
+    'REST APIs',
+    'Microservices',
+    'React',
+    'Next.js',
+  ],
+  'Data & Infrastructure': [
+    'BigQuery',
+    'Databricks',
+    'Pandas',
+    'PostgreSQL',
+    'MySQL',
+    'Docker',
+    'Git',
+    'AWS (IAM, Logging)',
+    'Azure',
+    'GCP',
+  ],
+  Languages: ['Python', 'JavaScript', 'C/C++', 'C#', 'Rust', 'SQL', 'Bash/Shell'],
+}
+
 const SKILL_DESCRIPTIONS: Record<string, string> = {
   Nmap: 'Network discovery, port scanning, and service enumeration.',
   Wireshark: 'Packet capture and deep network protocol traffic analysis.',
   'Burp Suite': 'Web application security testing and HTTP proxy inspection.',
   'Kali Linux': 'Penetration testing and security assessment environment.',
+  'OWASP Top 10': 'Identifying and mitigating critical web application security risks.',
+  VAPT: 'Vulnerability assessment and penetration testing across web and network targets.',
   'Cryptography (AES, SHA-256)': 'Symmetric encryption and cryptographic hashing for data integrity.',
   'IAM / RBAC': 'Identity and access management with role-based access controls.',
   'TCP/IP': 'Core networking protocols, socket communication, and routing.',
   Subnetting: 'Network segmentation and IP address space design.',
   'Packet Tracer': 'Network topology simulation and routing configuration.',
   'Secure File Transfer': 'Encrypted peer-to-peer and client-server file transmission.',
-  Python: 'Primary language for security tooling, backend services, and automation.',
+  XGBoost: 'Gradient-boosted decision trees for classification and anomaly detection.',
+  'scikit-learn': 'Classical machine learning pipelines, feature engineering, and model evaluation.',
+  'TensorFlow / PyTorch': 'Deep learning frameworks for neural networks and computer vision.',
+  LangChain: 'LLM orchestration, prompt chaining, and agentic tool workflows.',
+  'RAG / Qdrant': 'Retrieval-augmented generation with vector search and document indexing.',
+  'OpenAI & Gemini APIs': 'Generative AI integration for automated content, scripting, and metadata.',
+  'ElevenLabs API': 'AI voice synthesis and narration pipelines for media production.',
+  LoRA: 'Low-rank adaptation for efficient model fine-tuning and customization.',
+  NumPy: 'High-performance numerical computing and matrix operations.',
+  Databricks: 'Unified cloud analytics and automated data pipeline orchestration.',
+  Python: 'Primary language for AI/ML pipelines, backend services, and automation.',
   'C/C++': 'Systems programming and performance-critical applications.',
   'C / C++': 'Systems programming and performance-critical applications.',
   JavaScript: 'Frontend development and Node.js server-side work.',
@@ -385,6 +441,14 @@ const CURRENT_FOCUS_ITEMS = [
   'Threat Detection & Log Analysis',
   'Secure Coding Practices',
   'Vulnerability Assessment',
+]
+
+const AI_CURRENT_FOCUS_ITEMS = [
+  'Generative AI & Content Automation Pipelines',
+  'RAG & Vector Search (Qdrant, LangChain)',
+  'Machine Learning & Anomaly Detection (XGBoost)',
+  'High-Performance FastAPI Microservices',
+  'Cloud Data Engineering (BigQuery, Databricks)',
 ]
 
 // ── Hooks ──────────────────────────────────────────────────────────────────────
@@ -713,9 +777,10 @@ function TechnicalVisual() {
 
 // ── Navbar ──────────────────────────────────────────────────────────────────────
 
-function Navbar() {
+function Navbar({ mode }: { mode: PortfolioMode }) {
   const scrolled = useScrolled()
   const [menuOpen, setMenuOpen] = useState(false)
+  const isAI = mode === 'ai'
 
   const links = [
     { label: 'Profile', href: '#profile' },
@@ -748,7 +813,7 @@ function Navbar() {
               className="font-mono text-[8px] tracking-[0.22em] uppercase mt-0.5"
               style={{ color: '#3a3a3a' }}
             >
-              Cybersecurity & Software Engineer
+              {isAI ? 'AI & Software Engineer' : 'Cybersecurity & Software Engineer'}
             </div>
           </a>
 
@@ -878,7 +943,9 @@ function HireNotification() {
   )
 }
 
-function Hero() {
+function Hero({ mode }: { mode: PortfolioMode }) {
+  const isAI = mode === 'ai'
+
   return (
     <section
       id="hero"
@@ -906,9 +973,13 @@ function Hero() {
                 animation: 'fadeSlideUp 0.8s ease 0.25s both',
               }}
             >
-              Cybersecurity graduate & software engineer building
+              {isAI
+                ? 'AI & software engineer building'
+                : 'Cybersecurity graduate & software engineer building'}
               <br className="hidden sm:block" />
-              <span style={{ color: '#6b6b6b' }}> secure, reliable systems.</span>
+              <span style={{ color: '#6b6b6b' }}>
+                {isAI ? ' intelligent, scalable systems.' : ' secure, reliable systems.'}
+              </span>
             </h1>
 
             <p
@@ -918,10 +989,9 @@ function Hero() {
                 animation: 'fadeSlideUp 0.8s ease 0.4s both',
               }}
             >
-              BSc Cybersecurity graduate with professional software engineering experience. I combine
-              a strong development background (Python, FastAPI, Django) with hands-on security skills
-              (Wireshark, Nmap, Burp Suite, Kali Linux) to build secure applications and analyze
-              network threats.
+              {isAI
+                ? 'AI & Software Engineer building generative AI media pipelines, RAG systems, machine learning classifiers, and full-stack applications with Python, FastAPI, Django, Next.js, and cloud data platforms (BigQuery, Databricks).'
+                : 'BSc Cybersecurity graduate with professional software engineering experience. I combine a strong development background (Python, FastAPI, Django) with hands-on security skills (Wireshark, Nmap, Burp Suite, Kali Linux) to build secure applications and analyze network threats.'}
             </p>
 
             {/* Metadata row */}
@@ -931,7 +1001,11 @@ function Hero() {
             >
               {[
                 { label: 'Based in Karachi, Pakistan' },
-                { label: 'Open to Junior Security Engineer / AppSec / DevSecOps roles' },
+                {
+                  label: isAI
+                    ? 'Open to AI Developer / Software Engineer / ML & Data roles'
+                    : 'Open to Junior Security Engineer / AppSec / DevSecOps roles',
+                },
                 { label: 'Available for opportunities' },
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-2">
@@ -967,7 +1041,7 @@ function Hero() {
                   el.style.background = '#e8e4de'
                 }}
               >
-                Explore Security Projects
+                {isAI ? 'Explore AI & Software Projects' : 'Explore Security Projects'}
                 <ArrowIcon />
               </a>
               <a
@@ -1018,7 +1092,7 @@ function Hero() {
               <div className="absolute left-5 right-5 bottom-5 flex items-end justify-between gap-4">
                 <div>
                   <div className="font-mono text-[9px] tracking-[0.24em] uppercase mb-1" style={{ color: '#38bdf8' }}>
-                    Cybersecurity & Software Engineer
+                    {isAI ? 'AI & Software Engineer' : 'Cybersecurity & Software Engineer'}
                   </div>
                   <div className="text-lg font-semibold tracking-[-0.02em]" style={{ color: '#e8e4de' }}>
                     Ali Naeem
@@ -1046,7 +1120,7 @@ function Hero() {
 function Stats() {
   const stats = [
     { value: '01+', label: 'Years professional experience' },
-    { value: '04+', label: 'Security & Software Projects' },
+    { value: '10+', label: 'AI, Security & Software Projects' },
     { value: '08+', label: 'Programming languages & tools' },
     { value: 'BSc', label: 'Cybersecurity Degree (FAST-NUCES)' },
   ]
@@ -1088,7 +1162,9 @@ function Stats() {
 
 // ── About ──────────────────────────────────────────────────────────────────────
 
-function About() {
+function About({ mode }: { mode: PortfolioMode }) {
+  const isAI = mode === 'ai'
+
   return (
     <section id="profile" className="py-24 lg:py-32" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
       <div className="max-w-[1280px] mx-auto px-6 lg:px-12">
@@ -1102,26 +1178,49 @@ function About() {
                 className="text-[1.9rem] lg:text-[2.4rem] font-semibold tracking-[-0.02em] leading-[1.15] mb-8"
                 style={{ color: '#e8e4de' }}
               >
-                Bridging development and security.
+                {isAI
+                  ? 'Building production AI workflows and scalable backends.'
+                  : 'Bridging development and security.'}
               </h2>
             </Reveal>
 
             <Reveal delay={100}>
               <div className="space-y-4 text-[15px] leading-[1.8]" style={{ color: '#6b6b6b' }}>
-                <p>
-                  I have a background in cybersecurity and software engineering, having studied at
-                  FAST–NUCES and built production systems across backend engineering, data
-                  infrastructure, and web applications.
-                </p>
-                <p>
-                  My technical focus is shifting toward Application Security (AppSec) and Security
-                  Engineering. I leverage my coding experience to understand how systems are built, and
-                  my security training to understand how they are broken and defended.
-                </p>
-                <p>
-                  The goal: build resilient, secure software while developing deeper expertise in
-                  vulnerability assessment, threat mitigation, and cloud security.
-                </p>
+                {isAI ? (
+                  <>
+                    <p>
+                      I am an AI and Software Engineer who builds end-to-end generative AI
+                      workflows, machine learning pipelines, and full-stack applications across
+                      Python, FastAPI, Django, Next.js, and cloud data infrastructure.
+                    </p>
+                    <p>
+                      My recent work includes autonomous AI video generation and narration
+                      pipelines, automated SEO content enrichment tools, RAG-backed sales
+                      co-pilots, and cloud ETL pipelines on GCP BigQuery and Azure Databricks.
+                    </p>
+                    <p>
+                      The goal: turn manual digital content, analytics, and operational workflows
+                      into reliable, automated software systems.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      I have a background in cybersecurity and software engineering, having studied at
+                      FAST–NUCES and built production systems across backend engineering, data
+                      infrastructure, and web applications.
+                    </p>
+                    <p>
+                      My technical focus is shifting toward Application Security (AppSec) and Security
+                      Engineering. I leverage my coding experience to understand how systems are built, and
+                      my security training to understand how they are broken and defended.
+                    </p>
+                    <p>
+                      The goal: build resilient, secure software while developing deeper expertise in
+                      vulnerability assessment, threat mitigation, and cloud security.
+                    </p>
+                  </>
+                )}
               </div>
             </Reveal>
           </div>
@@ -1151,11 +1250,17 @@ function About() {
                 },
                 {
                   heading: 'Focus',
-                  lines: [
-                    'Application Security',
-                    'Security Engineering',
-                    'DevSecOps',
-                  ],
+                  lines: isAI
+                    ? [
+                        'Generative AI & LLM Workflows',
+                        'Machine Learning & RAG Pipelines',
+                        'Backend & Data Engineering',
+                      ]
+                    : [
+                        'Application Security',
+                        'Security Engineering',
+                        'DevSecOps',
+                      ],
                 },
               ].map((block) => (
                 <div key={block.heading}>
@@ -1488,8 +1593,28 @@ function ProjectCard({
   )
 }
 
-function Projects() {
+const AI_PROJECT_ORDER = [
+  'AI Video Generation Pipeline',
+  'AI Sales Co-Pilot',
+  'Global Leads',
+  'Fraud Detection System',
+  'Heart Disease Predictor',
+  'Book Recommender System',
+  'RideMate',
+  'Decentralised Identity Management System',
+  'Secure File Transfer System',
+  'Malware Signature Scanner',
+]
+
+function Projects({ mode }: { mode: PortfolioMode }) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const isAI = mode === 'ai'
+
+  const orderedProjects = isAI
+    ? AI_PROJECT_ORDER.map((name) => PROJECTS.find((p) => p.name === name))
+        .filter((p): p is Project => Boolean(p))
+        .map((p, idx) => ({ ...p, num: String(idx + 1).padStart(2, '0') }))
+    : PROJECTS
 
   return (
     <section id="projects" className="py-24 lg:py-32" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
@@ -1509,8 +1634,8 @@ function Projects() {
         </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px" style={{ background: 'rgba(255,255,255,0.04)' }}>
-          {PROJECTS.map((p, i) => (
-            <Reveal key={p.num} delay={i * 60}>
+          {orderedProjects.map((p, i) => (
+            <Reveal key={p.name} delay={i * 60}>
               <ProjectCard project={p} onOpen={setSelectedProject} />
             </Reveal>
           ))}
@@ -1564,7 +1689,9 @@ function SkillChip({ label }: { label: string }) {
   )
 }
 
-function Skills() {
+function Skills({ mode }: { mode: PortfolioMode }) {
+  const skillGroups = mode === 'ai' ? AI_SKILLS : SKILLS
+
   return (
     <section id="skills" className="py-24 lg:py-32" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
       <div className="max-w-[1280px] mx-auto px-6 lg:px-12">
@@ -1583,7 +1710,7 @@ function Skills() {
         </Reveal>
 
         <div className="space-y-10">
-          {Object.entries(SKILLS).map(([category, items], catIdx) => (
+          {Object.entries(skillGroups).map(([category, items], catIdx) => (
             <Reveal key={category} delay={catIdx * 60}>
               <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-6 lg:gap-12 items-start">
                 <div className="pt-2">
@@ -1729,13 +1856,15 @@ function Education() {
 
 // ── Current Focus ──────────────────────────────────────────────────────────────
 
-function CurrentFocus() {
-  const [visible, setVisible] = useState<boolean[]>(Array(CURRENT_FOCUS_ITEMS.length).fill(false))
+function CurrentFocus({ mode }: { mode: PortfolioMode }) {
+  const isAI = mode === 'ai'
+  const items = isAI ? AI_CURRENT_FOCUS_ITEMS : CURRENT_FOCUS_ITEMS
+  const [visible, setVisible] = useState<boolean[]>(Array(items.length).fill(false))
   const { ref, inView } = useInView(0.2)
 
   useEffect(() => {
     if (!inView) return
-    CURRENT_FOCUS_ITEMS.forEach((_, i) => {
+    items.forEach((_, i) => {
       setTimeout(() => {
         setVisible((prev) => {
           const next = [...prev]
@@ -1744,7 +1873,7 @@ function CurrentFocus() {
         })
       }, i * 140 + 200)
     })
-  }, [inView])
+  }, [inView, items])
 
   return (
     <section className="py-24 lg:py-32" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
@@ -1772,7 +1901,9 @@ function CurrentFocus() {
             >
               currently_building{' '}
               <span style={{ color: '#38bdf8' }}>
-                secure systems and resilient applications.
+                {isAI
+                  ? 'autonomous AI pipelines and scalable applications.'
+                  : 'secure systems and resilient applications.'}
               </span>
             </div>
           </div>
@@ -1796,7 +1927,7 @@ function CurrentFocus() {
               focus_areas.sh
             </div>
             <div className="space-y-3">
-              {CURRENT_FOCUS_ITEMS.map((item, i) => (
+              {items.map((item, i) => (
                 <div
                   key={item}
                   className="flex items-center gap-3 text-[13px] transition-all duration-300"
@@ -1832,7 +1963,8 @@ function CurrentFocus() {
 
 // ── Contact ─────────────────────────────────────────────────────────────────────
 
-function Contact() {
+function Contact({ mode }: { mode: PortfolioMode }) {
+  const isAI = mode === 'ai'
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [sent, setSent] = useState(false)
@@ -1919,13 +2051,14 @@ function Contact() {
                 className="text-[2.2rem] lg:text-[3rem] font-semibold tracking-[-0.02em] leading-[1.1] mb-6"
                 style={{ color: '#e8e4de' }}
               >
-                Have a problem worth securing?
+                {isAI ? 'Have a problem worth automating?' : 'Have a problem worth securing?'}
               </h2>
             </Reveal>
             <Reveal delay={100}>
               <p className="text-[14px] leading-relaxed mb-12" style={{ color: '#5a5a5a' }}>
-                I'm open to Junior Security Engineer, Application Security, and DevSecOps
-                opportunities. Always happy to discuss security challenges and secure system design.
+                {isAI
+                  ? "I'm open to AI Developer, Machine Learning, Backend, and Data Engineering opportunities. Always happy to discuss generative AI workflows, RAG pipelines, and scalable system design."
+                  : "I'm open to Junior Security Engineer, Application Security, and DevSecOps opportunities. Always happy to discuss security challenges and secure system design."}
               </p>
             </Reveal>
 
@@ -2159,7 +2292,8 @@ function Contact() {
 
 // ── Footer ──────────────────────────────────────────────────────────────────────
 
-function Footer() {
+function Footer({ mode = 'cyber' }: { mode?: PortfolioMode }) {
+  const isAI = mode === 'ai'
   return (
     <footer className="py-10">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-12">
@@ -2169,7 +2303,9 @@ function Footer() {
               Ali Naeem
             </div>
             <div className="font-mono text-[9px] tracking-[0.18em]" style={{ color: '#2e2e2e' }}>
-              Software Engineer · Cybersecurity · AppSec
+              {isAI
+                ? 'AI Engineer · Software Engineering · Data & ML'
+                : 'Software Engineer · Cybersecurity · AppSec'}
             </div>
           </div>
 
@@ -2488,6 +2624,16 @@ function ResumePage() {
 
 export default function App() {
   const pathname = typeof window !== 'undefined' ? window.location.pathname.replace(/\/+$/, '') : ''
+  const search = typeof window !== 'undefined' ? window.location.search : ''
+  const isAI = pathname === '/ai' || new URLSearchParams(search).get('mode') === 'ai'
+  const mode: PortfolioMode = isAI ? 'ai' : 'cyber'
+
+  useEffect(() => {
+    if (pathname === '/resume') return
+    document.title = isAI
+      ? 'Ali Naeem — AI & Software Engineer | Generative AI, ML & Backend'
+      : 'Ali Naeem — Cybersecurity & Software Engineer | AppSec & Network Security'
+  }, [pathname, isAI])
 
   if (pathname === '/resume') {
     return <ResumePage />
@@ -2495,21 +2641,21 @@ export default function App() {
 
   return (
     <div style={{ background: '#0b0b0b', color: '#e8e4de', minHeight: '100vh' }}>
-      <Navbar />
+      <Navbar mode={mode} />
       <HireNotification />
       <main>
-        <Hero />
+        <Hero mode={mode} />
         <Stats />
-        <About />
+        <About mode={mode} />
         <Experience />
-        <Projects />
-        <Skills />
+        <Projects mode={mode} />
+        <Skills mode={mode} />
         <EngineeringApproach />
         <Education />
-        <CurrentFocus />
-        <Contact />
+        <CurrentFocus mode={mode} />
+        <Contact mode={mode} />
       </main>
-      <Footer />
+      <Footer mode={mode} />
     </div>
   )
 }
