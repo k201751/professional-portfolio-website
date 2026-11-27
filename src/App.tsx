@@ -144,6 +144,7 @@ const PROJECTS: Project[] = [
     challenges: [
       'Minimizing false positives while scanning diverse binary and script formats.',
     ],
+    repository: 'https://github.com/k201751/yara-malware-scanner',
   },
   {
     num: '04',
